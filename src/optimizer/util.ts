@@ -42,6 +42,19 @@ export function makeValueExpression(value: Value): AstValue {
         return result as AstValue;
     }
     if (typeof value === "bigint") {
+        if (value < 0) {
+            // Maybe also a bug
+            const result = createAstNode({
+                kind: "number",
+                base: 10,
+                value: -value,
+                loc: dummySrcInfo,
+            });
+            return makeUnaryExpression(
+                "-",
+                result as AstExpression,
+            ) as AstValue;
+        }
         const result = createAstNode({
             kind: "number",
             base: 10,
